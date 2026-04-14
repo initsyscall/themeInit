@@ -2,7 +2,7 @@
   "name": "themeInit",
   "version": "1.0.0",
   "author": "initsyscall",
-  "repository": "https::/codeberg.org/initsyscall/themeInit",
+  "repository": "https://codeberg.org/initsyscall/themeInit",
   "themes": {
     "nightSyscall": {
       "type": "dark",

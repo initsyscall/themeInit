@@ -347,6 +347,334 @@
       background: color-mix(in srgb, var(--kwd) 10%, transparent);
     }
 
+    .showcase {
+      padding: 100px 0;
+    }
+
+    .showcase-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+
+    .showcase-tab {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--textSecondary);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .showcase-tab:hover {
+      color: var(--textPrimary);
+      border-color: var(--kwd);
+    }
+
+    .showcase-tab.active {
+      background: var(--kwd);
+      color: var(--bg);
+      border-color: var(--kwd);
+    }
+
+    .showcase-panel {
+      display: none;
+    }
+
+    .showcase-panel.active {
+      display: block;
+    }
+
+    .editor-frame {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: background 0.3s, border-color 0.3s;
+    }
+
+    .editor-titlebar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--border);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.3s, border-color 0.3s;
+    }
+
+    .editor-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .editor-dots span {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .editor-dots span:nth-child(1) { background: var(--fnc); }
+    .editor-dots span:nth-child(2) { background: var(--num); }
+    .editor-dots span:nth-child(3) { background: var(--opr); }
+
+    .editor-titlebar span:last-child {
+      color: var(--textMuted);
+      font-size: 0.8125rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .editor-body {
+      display: flex;
+      padding: 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.875rem;
+      line-height: 1.7;
+    }
+
+    .line-numbers {
+      display: flex;
+      flex-direction: column;
+      padding: 20px 16px;
+      background: color-mix(in srgb, var(--bg) 50%, var(--surface));
+      border-right: 1px solid var(--border);
+      text-align: right;
+      user-select: none;
+      color: var(--textMuted);
+      min-width: 50px;
+    }
+
+    .editor-body pre {
+      padding: 20px;
+      overflow-x: auto;
+      margin: 0;
+      flex: 1;
+    }
+
+    .editor-body code {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .svelte-preview {
+      padding: 24px;
+      background: var(--bg);
+    }
+
+    .app-window {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .app-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: var(--border);
+    }
+
+    .app-title {
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .app-buttons {
+      display: flex;
+      gap: 6px;
+    }
+
+    .app-buttons span {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--textMuted);
+    }
+
+    .app-content {
+      padding: 20px;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .app-input {
+      flex: 1;
+      padding: 10px 14px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--textPrimary);
+      font-size: 0.875rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .app-input:focus {
+      border-color: var(--kwd);
+    }
+
+    .app-input::placeholder {
+      color: var(--textMuted);
+    }
+
+    .app-btn {
+      padding: 10px 16px;
+      background: var(--kwd);
+      border: none;
+      border-radius: 8px;
+      color: var(--bg);
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .app-btn:hover {
+      opacity: 0.9;
+    }
+
+    .app-btn.small {
+      padding: 4px 8px;
+      font-size: 0.75rem;
+      background: var(--surface);
+      color: var(--textSecondary);
+      border: 1px solid var(--border);
+    }
+
+    .todo-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .todo-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: var(--bg);
+      border-radius: 8px;
+    }
+
+    .todo-item input[type="checkbox"] {
+      accent-color: var(--kwd);
+      width: 18px;
+      height: 18px;
+    }
+
+    .todo-item span {
+      flex: 1;
+      font-size: 0.875rem;
+    }
+
+    .todo-item span.done {
+      text-decoration: line-through;
+      color: var(--textMuted);
+    }
+
+    .dark-terminal {
+      background: var(--bg);
+    }
+
+    .tui-window {
+      padding: 16px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .tui-header {
+      display: flex;
+      justify-content: space-between;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 12px;
+      font-size: 0.875rem;
+      color: var(--textSecondary);
+    }
+
+    .tui-body {
+      display: flex;
+      gap: 16px;
+    }
+
+    .tui-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 140px;
+    }
+
+    .tui-item {
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.8125rem;
+      color: var(--textSecondary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tui-item.active {
+      background: var(--kwd);
+      color: var(--bg);
+    }
+
+    .tui-main {
+      flex: 1;
+    }
+
+    .tui-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+    }
+
+    .tui-table th,
+    .tui-table td {
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tui-table th {
+      color: var(--textMuted);
+      font-weight: 500;
+    }
+
+    .tui-table tr.selected {
+      background: color-mix(in srgb, var(--kwd) 15%, transparent);
+    }
+
+    .tui-table .num {
+      color: var(--num);
+    }
+
+    .tui-table .str {
+      color: var(--str);
+    }
+
+    .tui-table .fnc {
+      color: var(--fnc);
+    }
+
+    .tui-status {
+      margin-top: 12px;
+      font-size: 0.75rem;
+      color: var(--textMuted);
+    }
+
     .features {
       padding: 100px 0;
       position: relative;
@@ -753,6 +1081,7 @@
       <div class="nav-right">
         <ul class="nav-links">
           <li><a href="#features">Features</a></li>
+          <li><a href="#showcase">Showcase</a></li>
           <li><a href="#code">Usage</a></li>
           <li><a href="#palette">Palette</a></li>
           <li><a href="#cta">Get Started</a></li>
@@ -784,6 +1113,7 @@
 
   <div class="mobile-menu" id="mobileMenu">
     <a href="#features" class="mobile-link">Features</a>
+    <a href="#showcase" class="mobile-link">Showcase</a>
     <a href="#code" class="mobile-link">Usage</a>
     <a href="#palette" class="mobile-link">Palette</a>
     <a href="#cta" class="mobile-link">Get Started</a>
@@ -791,7 +1121,7 @@
 
   <section class="hero">
     <div class="hero-content">
-      <h1><span class="init">theme</span><span class="dot">.</span><span class="theme">Init</span><span class="semi">;</span></h1>
+      <h1><span class="init">theme</span><span class="dot">.</span><span class="theme">Init</span><span class="semi">();</span></h1>
       <h2>A Soothing <span class="gradient-text">Deep Purple</span> Color Scheme</h2>
       <p>The personal theme of <span style="color: var(--kwd);">initSyscall</span>. Not intended to be the next Catppuccin—just my thing. If you like it, cool. Community ports welcome.</p>
       <div class="buttons">
@@ -842,6 +1172,132 @@
     </div>
   </section>
 
+  <section class="showcase" id="showcase">
+    <div class="container">
+      <div class="section-header">
+        <h2>Theme in Action</h2>
+        <p>See themeInit across your favorite tools and platforms.</p>
+      </div>
+
+      <div class="showcase-tabs">
+        <button class="showcase-tab active" data-tab="neovim">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M1.6 0S0 1.6 0 3v18s1.6 3 3 3h18s3-1.6 3-3V3s-1.6-3-3-3H3.6zM6 6l3 3-3 3V6zm5 9l-3 3V9l3 3v3z"/></svg>
+          Neovim
+        </button>
+        <button class="showcase-tab" data-tab="svelte">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12.34 2.02c-4.68 0-7.36 3.04-7.94 6.96-.24 1.56-.16 2.86.18 3.94L12.34 20l7.76-6.92c.34-1.08.42-2.24.18-3.94C19.7 5.06 17.02 2 12.34 2z"/></svg>
+          Svelte WebApp
+        </button>
+        <button class="showcase-tab" data-tab="tui">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          Go BubbleTea TUI
+        </button>
+      </div>
+
+      <div class="showcase-content">
+        <div class="showcase-panel active" id="panel-neovim">
+          <div class="editor-frame">
+            <div class="editor-titlebar">
+              <div class="editor-dots"><span></span><span></span><span></span></div>
+              <span>main.zig — Neovim</span>
+            </div>
+            <div class="editor-body">
+              <div class="line-numbers">
+                <span> 1</span><span> 2</span><span> 3</span><span> 4</span><span> 5</span><span> 6</span><span> 7</span><span> 8</span><span> 9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span><span>16</span>
+              </div>
+              <pre><code><span class="code-kwd">const</span> std = @import(<span class="code-str">"std"</span>);
+
+<span class="code-kwd">const</span> <span class="code-typ">ArrayList</span> = std.ArrayList(<span class="code-typ">u8</span>);
+
+<span class="code-kwd">pub fn</span> <span class="code-fnc">main</span>() <span class="code-typ">void</span> {
+    <span class="code-kwd">var</span> buffer = <span class="code-typ">ArrayList</span>.init(std.heap.page_allocator);
+    <span class="code-kwd">defer</span> buffer.deinit();
+
+    <span class="code-kwd">try</span> buffer.appendSlice(<span class="code-str">"Hello, themeInit!"</span>);
+    std.debug.print(<span class="code-str">"{s}\n"</span>, .{buffer.items});
+}
+
+<span class="code-kwd">test</span> <span class="code-str">"basic array list"</span> {
+    <span class="code-kwd">var</span> list = <span class="code-typ">ArrayList</span>.init(std.testing.allocator);
+    <span class="code-kwd">defer</span> list.deinit();
+
+    <span class="code-kwd">try</span> list.append(<span class="code-num">42</span>);
+    <span class="code-kwd">try</span> std.testing.expect(list.items[<span class="code-num">0</span>] == <span class="code-num">42</span>);
+}</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="showcase-panel" id="panel-svelte">
+          <div class="editor-frame">
+            <div class="editor-titlebar">
+              <div class="editor-dots"><span></span><span></span><span></span></div>
+              <span>CrudApp.svelte</span>
+            </div>
+            <div class="editor-body svelte-preview">
+              <div class="app-window">
+                <div class="app-header">
+                  <span class="app-title">Todo App</span>
+                  <div class="app-buttons"><span></span><span></span><span></span></div>
+                </div>
+                <div class="app-content">
+                  <div class="input-group">
+                    <input type="text" placeholder="New task..." class="app-input" />
+                    <button class="app-btn primary">Add</button>
+                  </div>
+                  <ul class="todo-list">
+                    <li class="todo-item">
+                      <input type="checkbox" checked />
+                      <span class="done">Design theme</span>
+                      <button class="app-btn small">×</button>
+                    </li>
+                    <li class="todo-item">
+                      <input type="checkbox" />
+                      <span>Implement ports</span>
+                      <button class="app-btn small">×</button>
+                    </li>
+                    <li class="todo-item">
+                      <input type="checkbox" />
+                      <span>Write docs</span>
+                      <button class="app-btn small">×</button>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="showcase-panel" id="panel-tui">
+          <div class="editor-frame dark-terminal">
+            <div class="tui-window">
+              <div class="tui-header">
+                <span>☕ Bubble Tea</span>
+                <span>[q] Quit [j/k] Navigate</span>
+              </div>
+              <div class="tui-body">
+                <div class="tui-sidebar">
+                  <div class="tui-item active">  All Orders</div>
+                  <div class="tui-item">  Pending</div>
+                  <div class="tui-item">  Completed</div>
+                </div>
+                <div class="tui-main">
+                  <table class="tui-table">
+                    <tr><th>ID</th><th>Drink</th><th>Status</th></tr>
+                    <tr><td class="num">#001</td><td>Taro Milk</td><td class="str">● Ready</td></tr>
+                    <tr class="selected"><td class="num">#002</td><td>Brown Sugar</td><td class="fnc">● Making</td></tr>
+                    <tr><td class="num">#003</td><td>Matcha Latte</td><td class="str">● Ready</td></tr>
+                  </table>
+                  <div class="tui-status">2 of 3 ready</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="code-section" id="code">
     <div class="container">
       <div class="section-header">
@@ -861,20 +1317,47 @@
           <div class="code-dot"></div>
           <div class="code-dot"></div>
           <div class="code-dot"></div>
-          <span class="code-title">theme.json</span>
+          <span class="code-title">themeInit.json</span>
         </div>
-        <pre><code><span class="code-comment">// Define your theme configuration</span>
-<span class="code-opr">{</span>
-  <span class="code-prop">"name"</span><span class="code-opr">:</span> <span class="code-str">"nightSyscall"</span><span class="code-opr">,</span>
-  <span class="code-prop">"type"</span><span class="code-opr">:</span> <span class="code-str">"dark"</span><span class="code-opr">,</span>
-  <span class="code-prop">"colors"</span><span class="code-opr">:</span> <span class="code-opr">{</span>
-    <span class="code-prop">"bg"</span><span class="code-opr">:</span>  <span class="code-str">"#161423"</span><span class="code-opr">,</span>
-    <span class="code-prop">"kwd"</span><span class="code-opr">:</span>  <span class="code-str">"#A277FF"</span><span class="code-opr">,</span>
-    <span class="code-prop">"fnc"</span><span class="code-opr">:</span>  <span class="code-str">"#FF3366"</span><span class="code-opr">,</span>
-    <span class="code-prop">"typ"</span><span class="code-opr">:</span>  <span class="code-str">"#CBA6F7"</span><span class="code-opr">,</span>
-    <span class="code-prop">"str"</span><span class="code-opr">:</span>  <span class="code-str">"#F087BD"</span><span class="code-opr">,</span>
-    <span class="code-prop">"num"</span><span class="code-opr">:</span>  <span class="code-str">"#F6C177"</span><span class="code-opr">,</span>
-    <span class="code-prop">"opr"</span><span class="code-opr">:</span>  <span class="code-str">"#80FFEA"</span>
+        <pre><code><span class="code-opr">{</span>
+  <span class="code-prop">"name"</span><span class="code-opr">:</span> <span class="code-str">"themeInit"</span><span class="code-opr">,</span>
+  <span class="code-prop">"version"</span><span class="code-opr">:</span> <span class="code-str">"1.0.0"</span><span class="code-opr">,</span>
+  <span class="code-prop">"author"</span><span class="code-opr">:</span> <span class="code-str">"initsyscall"</span><span class="code-opr">,</span>
+  <span class="code-prop">"themes"</span><span class="code-opr">:</span> <span class="code-opr">{</span>
+    <span class="code-prop">"nightSyscall"</span><span class="code-opr">:</span> <span class="code-opr">{</span>
+      <span class="code-prop">"type"</span><span class="code-opr">:</span> <span class="code-str">"dark"</span><span class="code-opr">,</span>
+      <span class="code-prop">"colors"</span><span class="code-opr">:</span> <span class="code-opr">{</span>
+        <span class="code-prop">"bg"</span><span class="code-opr">:</span> <span class="code-str">"#161423"</span><span class="code-opr">,</span>
+        <span class="code-prop">"surface"</span><span class="code-opr">:</span> <span class="code-str">"#201D33"</span><span class="code-opr">,</span>
+        <span class="code-prop">"border"</span><span class="code-opr">:</span> <span class="code-str">"#322D4A"</span><span class="code-opr">,</span>
+        <span class="code-prop">"textPrimary"</span><span class="code-opr">:</span> <span class="code-str">"#E0DEF4"</span><span class="code-opr">,</span>
+        <span class="code-prop">"textSecondary"</span><span class="code-opr">:</span> <span class="code-str">"#908CAA"</span><span class="code-opr">,</span>
+        <span class="code-prop">"textMuted"</span><span class="code-opr">:</span> <span class="code-str">"#6E6A86"</span><span class="code-opr">,</span>
+        <span class="code-prop">"kwd"</span><span class="code-opr">:</span> <span class="code-str">"#A277FF"</span><span class="code-opr">,</span>
+        <span class="code-prop">"fnc"</span><span class="code-opr">:</span> <span class="code-str">"#FF3366"</span><span class="code-opr">,</span>
+        <span class="code-prop">"typ"</span><span class="code-opr">:</span> <span class="code-str">"#CBA6F7"</span><span class="code-opr">,</span>
+        <span class="code-prop">"str"</span><span class="code-opr">:</span> <span class="code-str">"#F087BD"</span><span class="code-opr">,</span>
+        <span class="code-prop">"num"</span><span class="code-opr">:</span> <span class="code-str">"#F6C177"</span><span class="code-opr">,</span>
+        <span class="code-prop">"opr"</span><span class="code-opr">:</span> <span class="code-str">"#80FFEA"</span>
+      <span class="code-opr">}</span>
+    <span class="code-opr">}</span><span class="code-opr">,</span>
+    <span class="code-prop">"daySyscall"</span><span class="code-opr">:</span> <span class="code-opr">{</span>
+      <span class="code-prop">"type"</span><span class="code-opr">:</span> <span class="code-str">"light"</span><span class="code-opr">,</span>
+      <span class="code-prop">"colors"</span><span class="code-opr">:</span> <span class="code-opr">{</span>
+        <span class="code-prop">"bg"</span><span class="code-opr">:</span> <span class="code-str">"#FCF6F5"</span><span class="code-opr">,</span>
+        <span class="code-prop">"surface"</span><span class="code-opr">:</span> <span class="code-str">"#F2EAE9"</span><span class="code-opr">,</span>
+        <span class="code-prop">"border"</span><span class="code-opr">:</span> <span class="code-str">"#E0D1CF"</span><span class="code-opr">,</span>
+        <span class="code-prop">"textPrimary"</span><span class="code-opr">:</span> <span class="code-str">"#45383C"</span><span class="code-opr">,</span>
+        <span class="code-prop">"textSecondary"</span><span class="code-opr">:</span> <span class="code-str">"#827075"</span><span class="code-opr">,</span>
+        <span class="code-prop">"textMuted"</span><span class="code-opr">:</span> <span class="code-str">"#A8959A"</span><span class="code-opr">,</span>
+        <span class="code-prop">"kwd"</span><span class="code-opr">:</span> <span class="code-str">"#752D7A"</span><span class="code-opr">,</span>
+        <span class="code-prop">"fnc"</span><span class="code-opr">:</span> <span class="code-str">"#D62846"</span><span class="code-opr">,</span>
+        <span class="code-prop">"typ"</span><span class="code-opr">:</span> <span class="code-str">"#9E4081"</span><span class="code-opr">,</span>
+        <span class="code-prop">"str"</span><span class="code-opr">:</span> <span class="code-str">"#D96677"</span><span class="code-opr">,</span>
+        <span class="code-prop">"num"</span><span class="code-opr">:</span> <span class="code-str">"#B06A3B"</span><span class="code-opr">,</span>
+        <span class="code-prop">"opr"</span><span class="code-opr">:</span> <span class="code-str">"#0F828A"</span>
+      <span class="code-opr">}</span>
+    <span class="code-opr">}</span>
   <span class="code-opr">}</span>
 <span class="code-opr">}</span></code></pre>
       </div>
@@ -968,6 +1451,19 @@
       localStorage.setItem('theme', newTheme);
     });
 
+    const showcaseTabs = document.querySelectorAll('.showcase-tab');
+    const showcasePanels = document.querySelectorAll('.showcase-panel');
+
+    showcaseTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const tabName = tab.dataset.tab;
+        showcaseTabs.forEach(t => t.classList.remove('active'));
+        showcasePanels.forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(`panel-${tabName}`).classList.add('active');
+      });
+    });
+
     const hamburger = document.getElementById('hamburger');
     const mobileMenu = document.getElementById('mobileMenu');
     const mobileLinks = document.querySelectorAll('.mobile-link');
@@ -1055,7 +1551,7 @@
 
     async function downloadTheme() {
       try {
-        const response = await fetch('theme.json');
+        const response = await fetch('themeInit.json');
         const data = await response.json();
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
@@ -1065,7 +1561,7 @@
         a.click();
         URL.revokeObjectURL(url);
       } catch (err) {
-        alert('Failed to download theme.json');
+        alert('Failed to download themeInit.json');
       }
     }
 
