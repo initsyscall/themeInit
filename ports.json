@@ -5,6 +5,12 @@
       "name": "themeInit Landing Page",
       "url": "https://codeberg.org/initsyscall/themeInit",
       "status": "live"
+    },
+    {
+      "platform": "Neovim",
+      "name": "themeInitNvim",
+      "url": "https://github.com/initsyscall/themeInitNvim",
+      "status": "live"
     }
   ],
   "community": []
