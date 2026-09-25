@@ -1,0 +1,667 @@
+/* themeInit — landing page
+ *
+ * Single responsibility: presentation. Every color value comes from
+ * themeInit.json at runtime (see app.js), so this file must contain NO
+ * palette literals. The four values in :root are a pre-paint fallback only,
+ * kept to avoid a white flash before app.js resolves the fetch.
+ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* The UA gives form controls a grey ButtonFace background, an outset border and
+   its own font. None of that exists in either palette, so no component should
+   ever inherit it — .swatch silently did, which is where the grey came from.
+   Every control here sets its own look on a class, which outranks this. */
+button, input, select, textarea {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+}
+
+/* ---------- tokens ---------- */
+
+:root {
+  /* Pre-paint fallback only. app.js overwrites every one of these from
+     themeInit.json; nothing here may become a second source of truth. */
+  --bg: #161423;
+  --surface: #201D33;
+  --textPrimary: #E0DEF4;
+  --border: #322D4A;
+
+  /* Degradation for the async window. The palette arrives via fetch, so between
+     first paint and resolve these tokens are undefined — and an undefined var()
+     invalidates its whole declaration. Aliasing them to tokens that ARE defined
+     keeps every element visible (a monochrome, not-invisible page) until the real
+     values land. app.js sets inline properties, which outrank this block. */
+  --borderStrong: var(--border);
+  --kwd: var(--textPrimary);
+  --typ: var(--textPrimary);
+  --fnc: var(--textPrimary);
+  --str: var(--textPrimary);
+  --num: var(--textPrimary);
+  --opr: var(--textPrimary);
+
+  --font: 'Inter', system-ui, -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', monospace;
+
+  /* 4px base */
+  --s1: 4px;  --s2: 8px;   --s3: 12px; --s4: 16px;
+  --s5: 24px; --s6: 32px;  --s7: 48px; --s8: 64px; --s9: 96px;
+
+  --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-full: 999px;
+
+  --ease: cubic-bezier(.2, .7, .3, 1);
+  --dur: 180ms;
+  --slow: 480ms;
+
+  --shadow-1: 0 1px 2px rgb(0 0 0 / .18);
+  --shadow-2: 0 12px 32px -14px rgb(0 0 0 / .45);
+
+  --measure: 62ch;
+  --page: 1120px;
+
+  /* ---------- semantic roles ----------
+   * No color values live here — each role resolves to a palette token, so
+   * editing one token in themeInit.json moves every element playing that
+   * role, automatically and everywhere. Hue carries meaning:
+   *
+   *   --kwd  brand + interactive   --typ  brand secondary, structure
+   *   --fnc  emphasis              --num  warm accent
+   *   --opr  cool accent, energy   --str  strings, code contexts only
+   *
+   * Large surfaces stay bg/surface/text; the chromatic tokens are spent on
+   * small, high-energy details so the page reads as one palette, not a rainbow.
+   */
+  --accent: var(--kwd);
+  --accent-2: var(--typ);
+  --hot: var(--fnc);
+  --warm: var(--num);
+  --energy: var(--opr);
+
+  --brand-gradient: linear-gradient(120deg, var(--kwd), var(--typ) 55%, var(--opr));
+}
+
+/* ---------- base ---------- */
+
+html {
+  scroll-behavior: smooth;
+  /* keep anchored sections clear of the fixed nav */
+  scroll-padding-top: 96px;
+  /* A safety net, not a layout strategy. `clip` rather than `hidden` because
+     `hidden` forces overflow-y to compute to `auto`, turning the root into a
+     scroll container — which breaks position:sticky and is unreliable on iOS.
+     Every real overflow is fixed at its own element: the aurora is clipped by
+     .hero, grids use min() inside minmax(), code scrolls inside .frame pre.
+     Do not let this line become the reason the layout fits. */
+  overflow-x: clip;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--textPrimary);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+h1, h2, h3, h4 {
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  font-weight: 600;
+  text-wrap: balance;
+}
+
+h1 { font-size: clamp(2.75rem, 8vw, 4.5rem); font-weight: 700; letter-spacing: -0.04em; }
+h2 { font-size: clamp(1.75rem, 4vw, 2.25rem); }
+h3 { font-size: 1.0625rem; }
+
+p { text-wrap: pretty; }
+
+a { color: var(--accent); text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent); text-underline-offset: 3px; }
+a:hover { text-decoration-color: var(--accent); }
+
+img, svg { display: block; max-width: 100%; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: var(--r-sm);
+}
+
+::selection { background: color-mix(in srgb, var(--accent) 30%, transparent); }
+
+.skip-link {
+  position: absolute; top: var(--s2); left: var(--s2);
+  z-index: 200; padding: var(--s2) var(--s4);
+  background: var(--surface); color: var(--textPrimary);
+  border: 1px solid var(--borderStrong); border-radius: var(--r-sm);
+  text-decoration: none; font-size: .875rem;
+  transform: translateY(-200%);
+}
+.skip-link:focus-visible { transform: none; }
+
+/* ---------- layout ---------- */
+
+.container {
+  width: 100%;
+  max-width: var(--page);
+  margin-inline: auto;
+  padding-inline: var(--s6);
+}
+
+.section { padding-block: clamp(var(--s8), 9vw, var(--s9)); }
+.section + .section { padding-top: 0; }
+
+.section-header { max-width: var(--measure); margin-inline: auto; text-align: center; margin-bottom: var(--s8); }
+.section-header p { color: var(--textSecondary); margin-top: var(--s3); }
+/* A short gradient rule ties every section header to the brand. */
+.section-header h2::after {
+  content: ''; display: block;
+  width: 3rem; height: 2px; margin: var(--s4) auto 0;
+  background: var(--brand-gradient);
+  border-radius: var(--r-full);
+}
+
+/* ---------- nav ---------- */
+
+.nav {
+  position: fixed; inset: 0 0 auto 0; z-index: 100;
+  padding-block: var(--s5);
+  border-bottom: 1px solid transparent;
+  box-shadow: 0 0 0 transparent;
+  transition: background-color var(--dur) var(--ease), border-color var(--dur) var(--ease),
+              box-shadow var(--dur) var(--ease), padding-block var(--dur) var(--ease);
+}
+/* Once content slides under the bar it needs a shadow, not just a tint: the
+   background is 80% opaque, so the edge is otherwise hard to place. */
+.nav.is-stuck {
+  background: color-mix(in srgb, var(--bg) 80%, transparent);
+  backdrop-filter: blur(20px) saturate(140%);
+  border-bottom-color: var(--border);
+  box-shadow: var(--shadow-1);
+  padding-block: var(--s3);
+}
+
+.nav-inner { display: flex; align-items: center; justify-content: space-between; gap: var(--s5); }
+
+/* The wordmark is a code token, so it is set in the mono face at every size.
+   The nav and the hero read from one SIGNATURE string in app.js. */
+.logo {
+  font-family: var(--mono);
+  font-weight: 500; font-size: 1rem;
+  color: var(--textPrimary); text-decoration: none;
+}
+
+.nav-links { display: flex; gap: var(--s5); list-style: none; }
+.nav-links a {
+  display: inline-block;
+  color: var(--textSecondary); text-decoration: none; font-size: .9375rem;
+  padding-block: var(--s1); transition: color var(--dur) var(--ease);
+}
+.nav-links a:hover { color: var(--textPrimary); }
+.nav-links a[aria-current='true'] { color: var(--textPrimary); }
+/* Scrollspy marks the current section with the brand gradient. */
+.nav-links a[aria-current='true']::after {
+  content: ''; display: block; height: 2px; margin-top: 3px;
+  background: var(--brand-gradient); border-radius: var(--r-full);
+}
+
+.nav-actions { display: flex; align-items: center; gap: var(--s3); }
+
+.icon-btn {
+  display: grid; place-items: center;
+  width: 40px; height: 40px;
+  background: var(--surface); color: var(--textPrimary);
+  border: 1px solid var(--border); border-radius: var(--r-full);
+  cursor: pointer; transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.icon-btn:hover { border-color: var(--borderStrong); color: var(--accent); }
+.icon-btn svg { width: 18px; height: 18px; }
+
+[data-theme='day'] .i-sun { display: none; }
+[data-theme='night'] .i-moon { display: none; }
+
+.burger { display: none; }
+/* The glyph swap rides on aria-expanded rather than a second class, so the icon
+   cannot disagree with the state a screen reader announces. */
+.i-x { display: none; }
+#burger[aria-expanded='true'] .i-menu { display: none; }
+#burger[aria-expanded='true'] .i-x { display: block; }
+
+/* ---------- mobile menu ---------- */
+
+.drawer {
+  position: fixed; inset: 0; z-index: 99;
+  display: none; flex-direction: column; gap: var(--s1);
+  padding: 104px var(--s6) var(--s7);
+  background: var(--bg);
+}
+.drawer.is-open { display: flex; }
+.drawer a {
+  padding: var(--s4) 0;
+  font-size: 1.25rem; color: var(--textSecondary); text-decoration: none;
+  border-bottom: 1px solid var(--border);
+}
+.drawer a:hover { color: var(--textPrimary); }
+
+/* ---------- hero ---------- */
+
+.hero {
+  display: grid; place-items: center;
+  min-height: 100svh;
+  padding: 160px 0 var(--s8);
+  position: relative; isolation: isolate;
+  text-align: center;
+  /* The aurora is inset -40% on every side, so it is 180% of the hero's width.
+     Clipped here, at the element that causes the overflow, rather than at the
+     root — a root-level clip would hide real overflow everywhere else. The
+     gradients already fade to transparent at their edges, so the cut is unseen. */
+  overflow: hidden;
+}
+/* A slow three-stop aurora, built entirely from palette tokens. Drifting by
+   transform (not background-position) so it stays on the compositor.
+   inset:0, not a negative inset: the hero is already full-bleed, so the
+   gradient box *is* the viewport width, and every stop stays inside it. A
+   -40% inset made this box 180% of the page wide and was the single cause of
+   the horizontal scrollbar. */
+@keyframes drift {
+  from { transform: translate3d(-2%, -1%, 0) rotate(0deg) scale(1); }
+  to   { transform: translate3d(2%, 1%, 0) rotate(14deg) scale(1.1); }
+}
+.hero::before {
+  content: ''; position: absolute; z-index: -1;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 42% 38% at 30% 26%,
+      color-mix(in srgb, var(--accent) 20%, transparent), transparent 70%),
+    radial-gradient(ellipse 38% 34% at 72% 70%,
+      color-mix(in srgb, var(--accent-2) 14%, transparent), transparent 70%),
+    radial-gradient(ellipse 30% 28% at 50% 92%,
+      color-mix(in srgb, var(--energy) 10%, transparent), transparent 72%);
+  animation: drift 30s var(--ease) infinite alternate;
+  will-change: transform;
+  pointer-events: none;
+}
+.hero-inner { max-width: 46rem; display: grid; justify-items: center; gap: var(--s5); }
+
+/* Set in mono and sized so `theme.Init();` never wraps and never overflows.
+   Deliberately no rem *floor*: 13 glyphs x 0.60em x 10vw = 78% of the viewport
+   width, against 90% available, so the fluid step is always safe — and because
+   the value is pure vw, a reader's larger default font size cannot inflate it
+   into an overflow the way a rem floor would. The 4.25rem term is a cap on very
+   wide screens, which is the one place rem is harmless. Re-check that 78/90
+   arithmetic if you change SIGNATURE or the step. */
+.hero h1 {
+  font-family: var(--mono);
+  font-size: min(10vw, 4.25rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+/* Each token glows in its own color, so the signature lights up in whatever
+   the palette says — one rule, no per-token values. */
+.hero h1 span {
+  text-shadow: 0 0 30px color-mix(in srgb, currentColor 26%, transparent);
+}
+
+.hero-sub { color: var(--textSecondary); font-size: 1.125rem; max-width: 34rem; }
+.hero-sub .by { color: var(--textPrimary); font-weight: 500; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: .4; transform: scale(.8); }
+}
+.eyebrow {
+  display: inline-flex; align-items: center; gap: var(--s2);
+  padding: var(--s1) var(--s3); border-radius: var(--r-full);
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--textSecondary); font-size: .8125rem; font-family: var(--mono);
+}
+.eyebrow .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--energy);
+  animation: pulse 2.6s ease-in-out infinite;
+}
+
+/* ---------- buttons ---------- */
+
+.actions { display: flex; flex-wrap: wrap; gap: var(--s3); justify-content: center; }
+
+.btn {
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--s2);
+  padding: var(--s3) var(--s6);
+  font: inherit; font-size: .9375rem; font-weight: 500;
+  border-radius: var(--r-full); border: 1px solid transparent;
+  text-decoration: none; cursor: pointer;
+  transition: background-color var(--dur) var(--ease), border-color var(--dur) var(--ease),
+              color var(--dur) var(--ease), transform var(--dur) var(--ease),
+              box-shadow var(--dur) var(--ease);
+}
+.btn svg { width: 16px; height: 16px; }
+.btn:active { transform: translateY(1px); }
+
+/* The primary CTA wears the brand gradient. It is one custom property, so
+   re-homing the brand in the JSON restyles every button at once. */
+.btn-primary {
+  background: var(--brand-gradient);
+  color: var(--bg);
+  background-size: 160% 160%;
+  background-position: 0% 50%;
+  transition: background-position var(--slow) var(--ease), box-shadow var(--dur) var(--ease),
+              transform var(--dur) var(--ease);
+}
+.btn-primary:hover {
+  background-position: 100% 50%;
+  box-shadow: 0 8px 26px -10px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+.btn-primary:active { transform: translateY(1px); }
+
+.btn-ghost { background: transparent; color: var(--textPrimary); border-color: var(--borderStrong); }
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ---------- cards ---------- */
+
+/* min() inside minmax() lets the track collapse to the container when the
+   container is narrower than the ideal track, instead of overflowing. */
+.cards { display: grid; gap: var(--s5); grid-template-columns: repeat(auto-fit, minmax(min(17rem, 100%), 1fr)); }
+
+.card {
+  position: relative; overflow: hidden;
+  display: grid; gap: var(--s3); align-content: start;
+  padding: var(--s6);
+  background: var(--surface);
+  /* --border sits at ~1.4:1 and reads as noise. --borderStrong (~3.4:1) is the
+     first value in the palette that actually delineates an interactive edge. */
+  border: 1px solid var(--borderStrong);
+  border-radius: var(--r-lg);
+  transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease),
+              box-shadow var(--dur) var(--ease);
+}
+/* Accent rail. The hue is chosen by data-accent on the element, so the mapping
+   lives in the markup and the value still comes from the palette. */
+.card::before {
+  content: ''; position: absolute; inset: 0 0 auto 0; height: 2px;
+  background: var(--card-accent, var(--accent));
+  opacity: .5;
+  transition: opacity var(--dur) var(--ease);
+}
+.card[data-accent='typ'] { --card-accent: var(--accent-2); }
+.card[data-accent='opr'] { --card-accent: var(--energy); }
+.card:hover {
+  border-color: var(--card-accent, var(--accent));
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-2);
+}
+.card:hover::before { opacity: 1; }
+
+.card-icon {
+  display: grid; place-items: center;
+  width: 40px; height: 40px; border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--card-accent, var(--accent)) 16%, transparent);
+  color: var(--card-accent, var(--accent));
+  transition: background-color var(--dur) var(--ease);
+}
+.card-icon svg { width: 20px; height: 20px; }
+.card p { color: var(--textSecondary); font-size: .9375rem; }
+
+/* ---------- tabs ---------- */
+
+.tabs {
+  display: flex; gap: var(--s1); justify-content: center; flex-wrap: wrap;
+  margin-bottom: var(--s6);
+}
+.tab {
+  display: inline-flex; align-items: center; gap: var(--s2);
+  padding: var(--s2) var(--s4);
+  font: inherit; font-size: .875rem; font-weight: 500;
+  color: var(--textSecondary); background: transparent;
+  border: 1px solid transparent; border-radius: var(--r-full);
+  cursor: pointer; transition: color var(--dur) var(--ease), background-color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.tab svg { width: 16px; height: 16px; }
+.tab:hover { color: var(--textPrimary); }
+.tab[aria-selected='true'] {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.panel[hidden] { display: none; }
+
+/* ---------- editor frame (one implementation, shared by all demos) ---------- */
+
+.frame {
+  border: 1px solid var(--borderStrong);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background: var(--surface);
+}
+.frame-bar {
+  display: flex; align-items: center; gap: var(--s3);
+  padding: var(--s3) var(--s4);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--mono); font-size: .75rem; color: var(--textMuted);
+}
+.dots { display: flex; gap: 6px; margin-right: var(--s1); }
+.dots i { width: 10px; height: 10px; border-radius: 50%; }
+.dots i:nth-child(1) { background: var(--hot); }
+.dots i:nth-child(2) { background: var(--warm); }
+.dots i:nth-child(3) { background: var(--energy); }
+
+.frame pre {
+  margin: 0; padding: var(--s5);
+  overflow-x: auto;
+  font-family: var(--mono); font-size: .8125rem; line-height: 1.85;
+  tab-size: 2;
+}
+
+.frame-bar .btn { margin-left: auto; padding: var(--s1) var(--s3); font-size: .75rem; }
+.frame-bar .btn svg { width: 14px; height: 14px; }
+
+/* ---------- syntax colors ---------- */
+
+.t-kwd { color: var(--kwd); }
+.t-fnc { color: var(--fnc); }
+.t-typ { color: var(--typ); }
+.t-str { color: var(--str); }
+.t-num { color: var(--num); }
+.t-opr { color: var(--opr); }
+.t-com { color: var(--textMuted); font-style: italic; }
+
+/* JSON view — rendered by app.js from the real themeInit.json */
+.json-view { color: var(--textSecondary); }
+.json-view .j-key { color: var(--textPrimary); }
+.json-view .j-str { color: var(--str); }
+.json-view .j-num { color: var(--num); }
+.json-view .j-lit { color: var(--kwd); }
+
+/* ---------- palette ---------- */
+
+.swatches { display: grid; gap: var(--s3); grid-template-columns: repeat(auto-fill, minmax(min(9.5rem, 100%), 1fr)); }
+
+/* This is the one section where a rainbow is the content rather than a risk, so
+   the tiles are allowed to be chromatic. Each edge tints from its own token
+   (--swatch, set from themeInit.json by app.js) instead of the shared grey, which
+   turns 13 identical boxes into a field of the actual palette. The background
+   stays transparent rather than --surface, because a --surface tile would swallow
+   the `surface` swatch whole. */
+.swatch {
+  display: grid; gap: var(--s2); align-content: end;
+  min-height: 6.5rem; padding: var(--s3);
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--swatch, var(--accent)) 34%, transparent);
+  border-radius: var(--r-md);
+  text-align: left; cursor: pointer;
+  transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease),
+              box-shadow var(--dur) var(--ease);
+}
+.swatch:hover {
+  transform: translateY(-2px);
+  border-color: var(--swatch, var(--accent));
+  box-shadow: 0 10px 26px -14px color-mix(in srgb, var(--swatch, var(--accent)) 65%, transparent);
+}
+.swatch-top { display: flex; align-items: center; justify-content: space-between; gap: var(--s2); }
+/* The hairline stays: `bg` and `surface` are by definition close to the page
+   behind them, and without an edge those two tiles are simply not visible. */
+.swatch-chip {
+  width: 100%; height: 2.25rem;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+}
+.swatch-name { font-size: .8125rem; font-weight: 500; }
+.swatch-hex { font-family: var(--mono); font-size: .75rem; color: var(--textSecondary); }
+
+
+/* ---------- ports ---------- */
+
+.ports { display: grid; gap: var(--s7); }
+.ports-group > h3 {
+  font-family: var(--mono); font-size: .75rem; font-weight: 500;
+  text-transform: uppercase; letter-spacing: .08em; color: var(--textMuted);
+  margin-bottom: var(--s4);
+}
+.port-list { display: grid; gap: var(--s2); }
+.port {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s4);
+  padding: var(--s4) var(--s5);
+  border: 1px solid var(--borderStrong); border-radius: var(--r-md);
+  text-decoration: none; color: inherit;
+  transition: border-color var(--dur) var(--ease), background-color var(--dur) var(--ease);
+}
+.port:hover { border-color: var(--accent); background: var(--surface); }
+.port-name { font-weight: 500; font-size: .9375rem; }
+.port-platform { color: var(--textSecondary); font-size: .8125rem; }
+
+.pill {
+  flex: none;
+  padding: var(--s1) var(--s3); border-radius: var(--r-full);
+  font-size: .6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em;
+  background: color-mix(in srgb, var(--energy) 16%, transparent); color: var(--energy);
+}
+.pill[data-status='wip'] { background: color-mix(in srgb, var(--warm) 16%, transparent); color: var(--warm); }
+
+/* ---------- cta / footer / toast ---------- */
+
+.cta {
+  padding: var(--s8) var(--s6);
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--borderStrong);
+  border-radius: var(--r-lg);
+}
+.cta p { color: var(--textSecondary); margin-block: var(--s3) var(--s6); }
+.cta .note { color: var(--textMuted); font-size: .875rem; margin-top: var(--s5); }
+
+.footer {
+  padding-block: var(--s7);
+  border-top: 1px solid var(--border);
+  text-align: center; color: var(--textMuted); font-size: .8125rem;
+}
+.footer a { color: var(--textSecondary); text-decoration: none; }
+.footer a:hover { color: var(--textPrimary); text-decoration: underline; }
+
+.toast {
+  position: fixed; z-index: 300;
+  left: 50%; bottom: var(--s6);
+  transform: translateX(-50%);
+  padding: var(--s3) var(--s5);
+  background: var(--surface); color: var(--textPrimary);
+  border: 1px solid var(--accent); border-radius: var(--r-full);
+  font-family: var(--mono); font-size: .8125rem;
+  box-shadow: var(--shadow-2);
+  opacity: 0; pointer-events: none;
+  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.toast.is-visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ---------- demo-only chrome (showcase panels) ---------- */
+
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+.app-window { max-width: 24rem; margin-inline: auto; padding: var(--s5); }
+.app-form { display: flex; gap: var(--s2); margin-bottom: var(--s5); }
+.app-form input {
+  flex: 1; min-width: 0; padding: var(--s2) var(--s3);
+  font: inherit; font-size: .875rem;
+  color: var(--textPrimary); background: var(--bg);
+  border: 1px solid var(--borderStrong); border-radius: var(--r-sm);
+}
+.app-form input::placeholder { color: var(--textMuted); }
+.app-form button {
+  font: inherit; font-size: .8125rem; font-weight: 500;
+  padding: var(--s2) var(--s4); cursor: pointer;
+  color: var(--bg); background: var(--accent);
+  border: 0; border-radius: var(--r-sm);
+}
+.app-row { display: flex; align-items: center; gap: var(--s3); padding: var(--s2) 0; }
+.app-row .box { width: 16px; height: 16px; accent-color: var(--accent); }
+.app-row .label { flex: 1; font-size: .875rem; }
+.app-row .label.done { color: var(--textMuted); text-decoration: line-through; }
+.app-row button {
+  font: inherit; font-size: .75rem; line-height: 1;
+  color: var(--textMuted); background: transparent;
+  border: 1px solid var(--border); border-radius: var(--r-sm);
+  padding: var(--s1) var(--s2); cursor: pointer;
+}
+.app-row button:hover { color: var(--hot); border-color: var(--hot); }
+
+.tui { font-family: var(--mono); font-size: .8125rem; }
+.tui-bar {
+  display: flex; justify-content: space-between; gap: var(--s4);
+  padding-bottom: var(--s3); margin-bottom: var(--s4);
+  border-bottom: 1px solid var(--border); color: var(--textMuted); font-size: .75rem;
+}
+.tui table { width: 100%; border-collapse: collapse; }
+.tui th {
+  text-align: left; padding: var(--s2) var(--s3);
+  color: var(--textMuted); font-weight: 500; font-size: .75rem;
+  text-transform: uppercase; letter-spacing: .05em;
+  border-bottom: 1px solid var(--border);
+}
+.tui td { padding: var(--s2) var(--s3); border-bottom: 1px solid var(--border); }
+.tui tr.is-sel td { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+.tui .ok { color: var(--opr); }
+.tui .busy { color: var(--num); }
+.tui .id { color: var(--typ); }
+.tui-status { margin-top: var(--s4); color: var(--textMuted); font-size: .75rem; }
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 860px) {
+  /* The bar keeps the wordmark and the switcher and adds the burger, so the only
+     thing that moves is the four links. The wordmark gives up a little type
+     size to pay for the two buttons. */
+  .nav-links { display: none; }
+  .burger { display: grid; }
+  .logo { font-size: .9375rem; }
+  .hero { padding-top: 128px; }
+}
+
+@media (max-width: 640px) {
+  .container { padding-inline: var(--s4); }
+  .section { padding-block: var(--s8); }
+  .frame pre { padding: var(--s4); font-size: .75rem; }
+  .actions { flex-direction: column; align-items: stretch; }
+  .actions .btn { width: 100%; }
+  .swatches { grid-template-columns: repeat(auto-fill, minmax(min(7.5rem, 100%), 1fr)); }
+  .card { padding: var(--s5); }
+}
+
+/* ---------- reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+  .card:hover, .swatch:hover, .btn:active { transform: none; }
+}
